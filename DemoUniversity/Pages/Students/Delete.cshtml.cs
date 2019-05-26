@@ -76,13 +76,6 @@ namespace DemoUniversity.Pages.Students
                                                 new { id, saveChangesError = true });
             }
 
-            if (Student != null)
-            {
-                _context.Student.Remove(Student);
-                await _context.SaveChangesAsync();
-            }
-
-            return RedirectToPage("./Index");
         }
     }
 }

@@ -14,7 +14,7 @@ namespace DemoUniversity.Models
 
         public string FirstName { get; set; }
 
-        [DataType(DataType.DateTime)]
+        [DataType(DataType.Date)]
         public DateTime EnrollmentDate { get; set; }
 
         public ICollection<Enrollment> Enrollments { get; set; }

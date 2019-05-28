@@ -6,28 +6,25 @@ using System.Threading.Tasks;
 
 namespace DemoUniversity.Models
 {
-    public class Student
+    public class Instructor
     {
-        public int StudentID { get; set; }
+        public int InstructorID { get; set; }
 
         [Required]
-        [StringLength(30)]
         [Display(Name = "Last Name")]
+        [StringLength(30)]
         public string LastName { get; set; }
 
         [Required]
-        [StringLength(30, ErrorMessage = "Last name cannot be more than 30 characters.")]
-        //[RegularExpression(@"^[A-Z]+[a-zA-Z""'\s-]*$")]
         [Display(Name = "First Name")]
+        [StringLength(30)]
         public string FirstName { get; set; }
 
-        [Required]
         [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString = "{0:yyyy-mm-dd}",ApplyFormatInEditMode = true)]
-        [Display(Name = "Enrollment Date")]
-        public DateTime EnrollmentDate { get; set; }
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
+        [Display(Name = "Hire Date")]
+        public DateTime HireDate { get; set; }
 
-        [Display(Name = "Full Name")]
         public string FullName
         {
             get
@@ -36,9 +33,9 @@ namespace DemoUniversity.Models
             }
         }
 
+        public ICollection<CourseAssignment> CourseAssignments { get; set; }
 
-        public ICollection<Enrollment> Enrollments { get; set; }
-
+        public OfficeAssignment OfficeAssignment { get; set; }
 
     }
 }

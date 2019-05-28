@@ -24,7 +24,7 @@ namespace DemoUniversity.Pages.Students
         }
 
         [BindProperty]
-        public StudentVM Student { get; set; }
+        public Student Student { get; set; }
 
         public async Task<IActionResult> OnPostAsync()
         {

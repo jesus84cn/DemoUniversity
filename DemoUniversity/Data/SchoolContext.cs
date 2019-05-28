@@ -13,8 +13,48 @@ namespace DemoUniversity.Models
         {
         }
 
-        public DbSet<DemoUniversity.Models.Student> Student { get; set; }
-        public DbSet<DemoUniversity.Models.Enrollment> Enrollment{ get; set; }
-        public DbSet<DemoUniversity.Models.Course> Course { get; set; }
+        public DbSet<Student> Student { get; set; }
+
+        public DbSet<Enrollment> Enrollment{ get; set; }
+
+        public DbSet<Course> Courses { get; set; }
+
+        public DbSet<Department> Departments { get; set; }
+
+        public DbSet<Instructor> Instructors { get; set; }
+
+        public DbSet<OfficeAssignment> OfficeAssignments { get; set; }
+
+        public DbSet<CourseAssignment> CourseAssignments { get; set; }
+
+
+
+
+
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Course>().ToTable("Course");
+            modelBuilder.Entity<Enrollment>().ToTable("Enrollment");
+            modelBuilder.Entity<Student>().ToTable("Student");
+            modelBuilder.Entity<Department>().ToTable("Department");
+            modelBuilder.Entity<Instructor>().ToTable("Instructor");
+            modelBuilder.Entity<OfficeAssignment>().ToTable("OfficeAssignment");
+            modelBuilder.Entity<CourseAssignment>().ToTable("CourseAssignment");
+            modelBuilder.Entity<Enrollment>().ToTable("Enrollment");
+
+            modelBuilder.Entity<CourseAssignment>()
+                .HasKey(c => new { c.CourseID, c.InstructorID });
+
+
+
+            //IF Instrcutor Id in department Entity is non-nullable the to restrict circular cascade delete
+
+            //modelBuilder.Entity<Department>()
+            //    .HasOne(d => d.Administrator)
+            //    .WithMany()
+            //    .OnDelete(DeleteBehavior.Restrict);
+
+        }
     }
 }

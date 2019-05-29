@@ -1,4 +1,5 @@
 ﻿using DemoUniversity.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +11,7 @@ namespace DemoUniversity.Data
     {
         public static void Initialize(SchoolContext context)
         {
+
             // context.Database.EnsureCreated();
 
             // Look for any students.
@@ -219,7 +221,7 @@ namespace DemoUniversity.Data
                     CourseID = courses.Single(c => c.Title == "Microeconomics").CourseID,
                     Grade = Grade.B
                     },
-                new Enrollment {
+                    new Enrollment {
                     StudentID = students.Single(s => s.LastName == "Barzdukas").StudentID,
                     CourseID = courses.Single(c => c.Title == "Chemistry").CourseID,
                     Grade = Grade.B

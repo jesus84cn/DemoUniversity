@@ -10,7 +10,7 @@ using DemoUniversity.Models;
 
 namespace DemoUniversity.Pages.Instructors
 {
-    public class EditModel : PageModel
+    public class EditModel : InstructorCoursesPageModel
     {
         private readonly DemoUniversity.Models.SchoolContext _context;
 
@@ -29,46 +29,53 @@ namespace DemoUniversity.Pages.Instructors
                 return NotFound();
             }
 
-            Instructor = await _context.Instructors.FirstOrDefaultAsync(m => m.InstructorID == id);
+            Instructor = await _context.Instructors
+                .Include(i => i.OfficeAssignment)
+                .Include(i => i.CourseAssignments)
+                    .ThenInclude(i => i.Course)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(m => m.InstructorID == id);
 
             if (Instructor == null)
             {
                 return NotFound();
             }
+            PopulateAssignedCourseData(_context, Instructor);
             return Page();
         }
 
-        public async Task<IActionResult> OnPostAsync()
+        public async Task<IActionResult> OnPostAsync(int? id, string[] selectedCourses)
         {
             if (!ModelState.IsValid)
             {
                 return Page();
             }
 
-            _context.Attach(Instructor).State = EntityState.Modified;
+            var instructorToUpdate = await _context.Instructors
+                    .Include(i => i.OfficeAssignment)
+                    .Include(i => i.CourseAssignments)
+                        .ThenInclude(i => i.Course)
+                    .FirstOrDefaultAsync(s => s.InstructorID == id);
 
-            try
+            if(await TryUpdateModelAsync<Instructor>(
+                instructorToUpdate,
+                "Instructor",
+                i => i.FirstName, i => i.LastName,
+                i => i.HireDate, i => i.OfficeAssignment))
             {
+                if(String.IsNullOrWhiteSpace(
+                    instructorToUpdate.OfficeAssignment?.Location))
+                {
+                    instructorToUpdate.OfficeAssignment = null;
+                }
+                UpdateInstrcutorCourses(_context, selectedCourses, instructorToUpdate);
                 await _context.SaveChangesAsync();
+                return RedirectToPage("./Index");
             }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!InstructorExists(Instructor.InstructorID))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return RedirectToPage("./Index");
+            UpdateInstrcutorCourses(_context, selectedCourses, instructorToUpdate);
+            PopulateAssignedCourseData(_context, instructorToUpdate);
+            return Page();
         }
 
-        private bool InstructorExists(int id)
-        {
-            return _context.Instructors.Any(e => e.InstructorID == id);
-        }
     }
 }

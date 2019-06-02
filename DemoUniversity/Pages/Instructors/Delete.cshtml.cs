@@ -37,21 +37,18 @@ namespace DemoUniversity.Pages.Instructors
             return Page();
         }
 
-        public async Task<IActionResult> OnPostAsync(int? id)
+        public async Task<IActionResult> OnPostAsync(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            Instructor instructorToRemove = await _context.Instructors
+                .Include(i => i.CourseAssignments)
+                .SingleAsync(i => i.InstructorID == id);
 
-            Instructor = await _context.Instructors.FindAsync(id);
-
-            if (Instructor != null)
-            {
-                _context.Instructors.Remove(Instructor);
-                await _context.SaveChangesAsync();
-            }
-
+            var departments = await _context.Departments
+                .Where(d => d.InstructorID == id)
+                .ToListAsync();
+            departments.ForEach(d => d.InstructorID = null);
+            _context.Instructors.Remove(instructorToRemove);
+            await _context.SaveChangesAsync();
             return RedirectToPage("./Index");
         }
     }

@@ -56,6 +56,12 @@ namespace DemoUniversity.Models
             //    .WithMany()
             //    .OnDelete(DeleteBehavior.Restrict);
 
+            // To Define property As a RowVersion using fluent API
+            //modelBuilder.Entity<Department>()
+            //    .Property<byte[]>("RowVersion")
+            //    .IsRowVersion();
+
+ 
         }
     }
 }
